@@ -54,7 +54,6 @@ protected:
                                                    llvm::StringRef) override {
         return std::make_unique<DeprecatedConsumer>(&CI.getASTContext());
     }
-
      bool ParseArgs(const CompilerInstance &Compiler,
                  const std::vector<std::string> &args) override {
     if (!args.empty() && args[0] == "help")
