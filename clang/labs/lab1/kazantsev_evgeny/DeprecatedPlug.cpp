@@ -57,10 +57,12 @@ protected:
   }
   bool ParseArgs(const CompilerInstance &Compiler,
                  const std::vector<std::string> &args) override {
-    if (!args.empty() && args[0] == "help")
+    if (!args.empty() && args[0] == "help") {
       PrintHelp(llvm::errs());
+      return false;
+    }
 
-    return false;
+    return true;
   }
 
   void PrintHelp(llvm::raw_ostream &ros) {
