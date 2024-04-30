@@ -78,4 +78,4 @@ bool X86KazantsevPass::runOnMachineFunction(MachineFunction &MF) {
 }
 
 static RegisterPass<X86KazantsevPass> X("x86-kazantsev-pass",
-                                         "X86 Kazantsev Pass", false, false);
+                                        "X86 Kazantsev Pass", false, false);
