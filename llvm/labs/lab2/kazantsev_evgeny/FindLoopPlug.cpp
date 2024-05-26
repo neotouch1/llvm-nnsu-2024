@@ -15,7 +15,6 @@
 #include "llvm/Support/Compiler.h"
 
 using namespace llvm;
-
 namespace {
 
 struct ForWrapper : PassInfoMixin<ForWrapper> {
