@@ -370,7 +370,7 @@ body:             |
     %4:vr128 = nofpexcept MULPDrr %1, %3, implicit $mxcsr
     ; CHECK:        %5:vr128 = nofpexcept ADDPDrr %0, %3, implicit $mxcsr
     ; CHECK-NEXT:   %6:vr128 = VFMADD213PDr %1, %3, %5, implicit $mxcsr
-    ; CHECK-NEXT:   %7:vr128 = nofpexcept MULPDrr %5, killed %6, implicit $mxcsr
+    ; CHECK-NEXT: %7:vr128 = nofpexcept MULPDrr %5, killed %6, implicit $mxcsr
     ; CHECK-NEXT:   $xmm0 = COPY %7
     %5:vr128 = nofpexcept ADDPDrr %0, %3, implicit $mxcsr
     %6:vr128 = nofpexcept ADDPDrr %5, killed %4, implicit $mxcsr
