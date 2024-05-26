@@ -1,4 +1,4 @@
-set(PluginName PolozovMaxDepthPass)
+set(PluginName KazantsevPassDepthMax)
 
 file(GLOB_RECURSE ALL_SOURCE_FILES *.cpp *.h)
 add_llvm_pass_plugin(${PluginName}
