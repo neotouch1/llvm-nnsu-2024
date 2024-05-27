@@ -15,19 +15,22 @@
 #include "llvm/Support/Compiler.h"
 
 using namespace llvm;
+
 namespace {
 
 struct ForWrapper : PassInfoMixin<ForWrapper> {
-  llvm::PreservedAnalyses run(llvm::Function &F, llvm::FunctionAnalysisManager &FA) {
-
+  llvm::PreservedAnalyses run(llvm::Function &F,
+                              llvm::FunctionAnalysisManager &FA) {
     auto *FM = FunctionType::get(Type::getVoidTy(F.getContext()), false);
-    auto LoopStartFunction = F.getParent()->getOrInsertFunction("loop_start", FM);
+    auto LoopStartFunction =
+        F.getParent()->getOrInsertFunction("loop_start", FM);
     auto LoopEndFunction = F.getParent()->getOrInsertFunction("loop_end", FM);
     IRBuilder<> Builder(F.getContext());
 
-    auto &LA = FA.getResult<LoopAnalysis>(F); // Gets the result of loop analysis
+    auto &LA =
+        FA.getResult<LoopAnalysis>(F); // Gets the result of loop analysis
 
-        for (auto &L : LA) {
+    for (auto &L : LA) {
       auto *Head = L->getHeader();
       for (auto *const Pred : children<Inverse<BasicBlock *>>(Head)) {
         if (!L->contains(Pred)) {
@@ -42,7 +45,7 @@ struct ForWrapper : PassInfoMixin<ForWrapper> {
           }
           if (!loopStartPresent) {
             Builder.SetInsertPoint(Pred->getTerminator());
-            Builder.CreateCall(LoopStartFunction); // создание вызова функции
+            Builder.CreateCall(LoopStartFunction); // creates a function call
           }
         }
       }
@@ -72,14 +75,14 @@ struct ForWrapper : PassInfoMixin<ForWrapper> {
   }
 };
 
-}
+} // namespace
 
-extern "C" LLVM_ATTRIBUTE_WEAK :: PassPluginLibraryInfo
-llvmGetPassPluginInfo() {
+extern "C" LLVM_ATTRIBUTE_WEAK ::PassPluginLibraryInfo llvmGetPassPluginInfo() {
   return {LLVM_PLUGIN_API_VERSION, "KazantsevFindLoopPlug", LLVM_VERSION_STRING,
           [](PassBuilder &PB) {
             PB.registerPipelineParsingCallback( // Registers a callback function
-                [](StringRef Name, llvm::FunctionPassManager &PM, ArrayRef<PassBuilder::PipelineElement>) {
+                [](StringRef Name, llvm::FunctionPassManager &PM,
+                   ArrayRef<PassBuilder::PipelineElement>) {
                   if (Name == "kazantsev-loop-pass") {
                     PM.addPass(ForWrapper());
                     return true;
