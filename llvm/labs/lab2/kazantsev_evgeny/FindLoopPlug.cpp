@@ -27,20 +27,42 @@ struct ForWrapper : PassInfoMixin<ForWrapper> {
 
     auto &LA = FA.getResult<LoopAnalysis>(F); // Gets the result of loop analysis
 
-    for (auto &L : LA) {
+        for (auto &L : LA) {
       auto *Head = L->getHeader();
       for (auto *const Pred : children<Inverse<BasicBlock *>>(Head)) {
         if (!L->contains(Pred)) {
-          Builder.SetInsertPoint(Pred->getTerminator());
-          Builder.CreateCall(LoopStartFunction); // creates a function call
+          bool loopStartPresent = false;
+          for (auto &I : *Pred) {
+            if (auto *Call = dyn_cast<CallInst>(&I)) {
+              if (Call->getCalledFunction() == LoopStartFunction.getCallee()) {
+                loopStartPresent = true;
+                break;
+              }
+            }
+          }
+          if (!loopStartPresent) {
+            Builder.SetInsertPoint(Pred->getTerminator());
+            Builder.CreateCall(LoopStartFunction); // создание вызова функции
+          }
         }
       }
 
       SmallVector<BasicBlock *, 8> ExitB;
       L->getExitBlocks(ExitB);
       for (auto *const Bb : ExitB) {
-        Builder.SetInsertPoint(Bb->getFirstNonPHI());
-        Builder.CreateCall(LoopEndFunction);
+        bool loopEndPresent = false;
+        for (auto &I : *Bb) {
+          if (auto *Call = dyn_cast<CallInst>(&I)) {
+            if (Call->getCalledFunction() == LoopEndFunction.getCallee()) {
+              loopEndPresent = true;
+              break;
+            }
+          }
+        }
+        if (!loopEndPresent) {
+          Builder.SetInsertPoint(Bb->getFirstNonPHI());
+          Builder.CreateCall(LoopEndFunction);
+        }
       }
     }
 
