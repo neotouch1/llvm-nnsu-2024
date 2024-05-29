@@ -45,7 +45,8 @@ struct ForWrapper : PassInfoMixin<ForWrapper> {
           }
           if (!loopStartPresent) {
             Builder.SetInsertPoint(Pred->getTerminator());
-            Builder.CreateCall(LoopStartFunction); // вставка loop_start только если его нет
+            Builder.CreateCall(
+                LoopStartFunction); // вставка loop_start только если его нет
           }
         }
       }
@@ -64,7 +65,8 @@ struct ForWrapper : PassInfoMixin<ForWrapper> {
         }
         if (!loopEndPresent) {
           Builder.SetInsertPoint(Bb->getFirstNonPHI());
-          Builder.CreateCall(LoopEndFunction); // вставка loop_end только если его нет
+          Builder.CreateCall(
+              LoopEndFunction); // вставка loop_end только если его нет
         }
       }
     }
