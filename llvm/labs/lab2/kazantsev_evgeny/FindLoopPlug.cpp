@@ -45,13 +45,13 @@ struct ForWrapper : PassInfoMixin<ForWrapper> {
           }
           if (!loopStartPresent) {
             Builder.SetInsertPoint(Pred->getTerminator());
-            Builder.CreateCall(LoopStartFunction); // creates a function call
+            Builder.CreateCall(LoopStartFunction); // вставка loop_start только если его нет
           }
         }
       }
 
       SmallVector<BasicBlock *, 8> ExitB;
-      L->getExitBlocks(ExitB);
+      L->getUniqueExitBlocks(ExitB);
       for (auto *const Bb : ExitB) {
         bool loopEndPresent = false;
         for (auto &I : *Bb) {
@@ -64,7 +64,7 @@ struct ForWrapper : PassInfoMixin<ForWrapper> {
         }
         if (!loopEndPresent) {
           Builder.SetInsertPoint(Bb->getFirstNonPHI());
-          Builder.CreateCall(LoopEndFunction);
+          Builder.CreateCall(LoopEndFunction); // вставка loop_end только если его нет
         }
       }
     }
